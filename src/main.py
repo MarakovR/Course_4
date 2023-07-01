@@ -1,35 +1,65 @@
-from src.selection_of_vacancies import Data_recording, HH_vacancy, SJ_vacancy
 from src.api_platforms import HeadHunterAPI, SuperJobAPI
-import json
+from src.selection_of_vacancies import HH_user_vacancies, open_file_vacancies_hh, SJ_user_vacancies, Output_user, \
+    open_file_vacancies_sj
 
-
-def input_user():
-    json_obj_hh = json.loads(hh_api.get_vacancies())  # поиск вакансий по API
-    json_obj_sj = json.loads(sj_api.get_vacancies())
-    vacancy = []
-    for i in json_obj_hh['items']:
-        obj_v = HH_vacancy(i)
-        data = obj_v.attribute_vacancy()
-        vacancy.append(data)
-    for i in json_obj_sj['objects']:
-        obj_v = SJ_vacancy(i)
-        data = obj_v.attribute_vacancy()
-        vacancy.append(data)
-    file_save = Data_recording(vacancy)
-    file_save.recording()
-
-
-def open_file_vacancies():
-    with open('../files/vacancies.json', 'r', encoding='utf8') as file:
-        f = json.load(file)
-        for i in f:
-            print(i['name'])
-
-
-input_user_p = 'HH и SJ'
-user = 'Python'
-hh_api = HeadHunterAPI(user)
-sj_api = SuperJobAPI(user)
-input_user()
-print('По Вашему запросу было собрано несколько вакансий, ознакомьтесь...')
-open_file_vacancies()
+user_vacancy = (input('Какая вакансия Вас интересует?\n'))
+platforms_input = (input('На какой площадке вы хотите осуществить поиск? HH (HeadHunter), SJ (SuperJob)\n').lower())
+if platforms_input == 'HH'.lower():
+    api = HeadHunterAPI(user_vacancy)
+    obj_user_vac = HH_user_vacancies(api)
+    obj_user_vac.save_user_vacancy()
+    if not open_file_vacancies_hh():
+        print('Запрошенных вакансий найти не удалось')
+    else:
+        user_answer = input(
+            'Интересующие Вас вакансии собраны, хотите просмотреть их все или сформировать топ? (введите "ВСЕ" или '
+            '"ТОП")\n').lower()
+        if user_answer == "ВСЕ".lower():
+            obj_output = Output_user(100)
+            obj_output.output_hh()
+        elif user_answer == "ТОП".lower():
+            obj_output = Output_user(input('Введите количество ТОП\n'))
+            obj_output.output_hh()
+        else:
+            print('Нет такого варианта ответа, попробуйте сначала')
+elif platforms_input == 'SJ'.lower():
+    api = SuperJobAPI(user_vacancy)
+    obj_user_vac = SJ_user_vacancies(api)
+    obj_user_vac.save_user_vacancy()
+    if not open_file_vacancies_sj():
+        print('Запрошенных вакансий найти не удалось')
+    else:
+        user_answer = input(
+            'Интересующие Вас вакансии собраны, хотите просмотреть их все или сформировать топ? (введите "ВСЕ" или '
+            '"ТОП")\n').lower()
+        if user_answer == "ВСЕ".lower():
+            obj_output = Output_user(100)
+            obj_output.output_sj()
+        elif user_answer == "ТОП".lower():
+            obj_output = Output_user(input('Введите количество ТОП\n'))
+            obj_output.output_sj()
+        else:
+            print('Нет такого варианта ответа, попробуйте сначала')
+elif platforms_input == 'HH, SJ'.lower() or 'ВСЕ'.lower():
+    api_hh = HeadHunterAPI(user_vacancy)
+    api_sj = SuperJobAPI(user_vacancy)
+    obj_user_vac_hh = HH_user_vacancies(api_hh)
+    obj_user_vac_sj = SJ_user_vacancies(api_sj)
+    obj_user_vac_hh.save_user_vacancy()
+    obj_user_vac_sj.save_user_vacancy()
+    if not open_file_vacancies_hh():
+        print('Запрошенных вакансий найти не удалось')
+    else:
+        user_answer = input(
+            'Интересующие Вас вакансии собраны, хотите просмотреть их все или сформировать топ? (введите "ВСЕ" или '
+            '"ТОП")\n').lower()
+        if user_answer == "ВСЕ".lower():
+            obj_output = Output_user(100)
+            obj_output.output_hh()
+            obj_output.output_sj()
+        elif user_answer == "ТОП".lower():
+            obj_output = Output_user(input('Введите количество ТОП\n'))
+            obj_output.output_hh()
+            obj_output.output_sj()
+        else:
+            print('Нет такого варианта ответа, попробуйте сначала')
