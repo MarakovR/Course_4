@@ -1,5 +1,5 @@
-from src.api_platforms import HeadHunterAPI, SuperJobAPI
-from src.selection_of_vacancies import User_vacancies, Output_user, recording, open_file_vacancies
+from api_platforms import HeadHunterAPI, SuperJobAPI
+from selection_of_vacancies import User_vacancies, Output_user, recording, open_file_vacancies
 
 """ Работа с пользователем """
 user_vacancy = (input('Какая вакансия Вас интересует?\n'))
