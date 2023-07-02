@@ -3,6 +3,7 @@ import requests
 
 
 class Platform(ABC):
+    """ Получает данные с платформ по API """
 
     def __init__(self, name_vacancy):
         self.name_vacancy = name_vacancy
@@ -13,10 +14,11 @@ class Platform(ABC):
 
 
 class HeadHunterAPI(Platform):
+    """ Получает данные с HeadHunter по API """
 
     def get_vacancies(self):
         params = {
-            'text': self.name_vacancy,
+            'text': f'NAME:{self.name_vacancy}',
             'area': 1,  # Поиск по вакансиям города Москва
             'page': 0,  # Индекс страницы поиска на HH
             'per_page': 100  # Кол-во вакансий на 1 странице
@@ -29,6 +31,7 @@ class HeadHunterAPI(Platform):
 
 
 class SuperJobAPI(Platform):
+    """ Получает данные с SuperJob по API """
 
     def get_vacancies(self):
         headers = {
